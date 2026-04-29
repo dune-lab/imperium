@@ -1,0 +1,27 @@
+{
+  "name": "imperium",
+  "version": "1.0.0",
+  "license": "MIT",
+  "prettier": "@enxoval/quality/prettier",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/src/server.js",
+    "lint": "prettier --check src && eslint src --max-warnings 0",
+    "lint-fix": "prettier --write src && eslint src --fix"
+  },
+  "dependencies": {
+    "@enxoval/auth": "file:../enxoval/auth",
+    "@enxoval/http": "file:../enxoval/http",
+    "@enxoval/observability": "^1.0.1",
+    "@enxoval/types": "file:../enxoval/types"
+  },
+  "devDependencies": {
+    "@enxoval/quality": "^1.0.1",
+    "@types/node": "^24.0.0",
+    "nodemon": "^3.1.14",
+    "pino-pretty": "^13.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.2"
+  }
+}
