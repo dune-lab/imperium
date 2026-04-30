@@ -7,22 +7,26 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node --env-file=.env dist/src/server.js",
+    "test": "vitest run --config node_modules/@enxoval/testing/dist/vitest.config.js",
+    "integration": "vitest run --config node_modules/@enxoval/testing/dist/vitest.config.js --project integration",
     "lint": "prettier --check src && eslint src --max-warnings 0",
     "lint-fix": "prettier --write src && eslint src --fix",
     "postbuild": "node node_modules/@enxoval/http/dist/cli/generate-contracts.js"
   },
   "dependencies": {
     "@enxoval/auth": "^1.0.0",
-    "@enxoval/http": "^1.0.4",
+    "@enxoval/http": "^1.0.11",
     "@enxoval/observability": "^1.0.1",
     "@enxoval/types": "^1.0.5"
   },
   "devDependencies": {
     "@enxoval/quality": "^1.0.1",
+    "@enxoval/testing": "^1.0.2",
     "@types/node": "^24.0.0",
     "nodemon": "^3.1.14",
     "pino-pretty": "^13.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.5"
   }
 }
