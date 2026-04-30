@@ -8,13 +8,14 @@
     "build": "tsc",
     "start": "node --env-file=.env dist/src/server.js",
     "lint": "prettier --check src && eslint src --max-warnings 0",
-    "lint-fix": "prettier --write src && eslint src --fix"
+    "lint-fix": "prettier --write src && eslint src --fix",
+    "postbuild": "node node_modules/@enxoval/http/dist/cli/generate-contracts.js"
   },
   "dependencies": {
-    "@enxoval/auth": "file:../enxoval/auth",
-    "@enxoval/http": "file:../enxoval/http",
+    "@enxoval/auth": "^1.0.0",
+    "@enxoval/http": "^1.0.4",
     "@enxoval/observability": "^1.0.1",
-    "@enxoval/types": "file:../enxoval/types"
+    "@enxoval/types": "^1.0.5"
   },
   "devDependencies": {
     "@enxoval/quality": "^1.0.1",
