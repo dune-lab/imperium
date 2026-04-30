@@ -125,13 +125,32 @@ Build
 Wire types live in `src/wire/`. Imperium is a pure consumer — it only defines `wire_in` types (what it expects from each partner):
 
 ```ts
-import { createSchema, field } from '@enxoval/types';
-
+// wire/in/atreides.ts — matches atreides UserWireOut
 export const AtreidesWireIn = createSchema({
+  id: field.string(),
+  name: field.string(),
+  email: field.string(),
+  emailVerified: field.boolean(),
+  role: field.string(),
+  createdAt: field.string(),
+});
+
+// wire/in/persona.ts — matches persona StudentWireOut
+export const PersonaWireIn = createSchema({
   id: field.uuid(),
   name: field.string(),
   email: field.string(),
-  role: field.string(),
+  userId: field.uuid(),
+  createdAt: field.string(),
+});
+
+// wire/in/odyssey.ts — matches odyssey JourneyWireOut
+export const OdysseyWireIn = createSchema({
+  id: field.uuid(),
+  studentId: field.uuid(),
+  currentStep: field.string(),
+  status: field.string(),
+  createdAt: field.string(),
 });
 ```
 
