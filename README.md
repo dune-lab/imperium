@@ -122,18 +122,17 @@ Build
 
 ## Contract Validation
 
-Wire types live in `src/wire/`. After every build, `contracts.json` is generated automatically via the `postbuild` script and published to the contract registry.
-
-Imperium is a pure consumer — it only defines `wire_in` types (what it expects from each partner). kanly validates that each partner's `wire_out` matches.
-
-To add metadata to a wire type for richer kanly logs:
+Wire types live in `src/wire/`. Imperium is a pure consumer — it only defines `wire_in` types (what it expects from each partner):
 
 ```ts
-static describe() {
-  return {
-    _meta: { method: 'GET', path: '/users/:id' },
-    id: { type: 'uuid' },
-    name: { type: 'string' },
-  };
-}
+import { createSchema, field } from '@enxoval/types';
+
+export const AtreidesWireIn = createSchema({
+  id: field.uuid(),
+  name: field.string(),
+  email: field.string(),
+  role: field.string(),
+});
 ```
+
+After every build, `contracts.json` is auto-generated via the `postbuild` script and published to [dune-lab/contracts](https://github.com/dune-lab/contracts). kanly reads this registry on every PR and validates that each partner's `wire_out` matches imperium's `wire_in`.
