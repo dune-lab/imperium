@@ -2,11 +2,12 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY imperium/package.json ./package.json
+COPY imperium/package-lock.json ./package-lock.json
 RUN npm ci
 
-COPY src ./src
-COPY tsconfig.json ./
+COPY imperium/src ./src
+COPY imperium/tsconfig.json ./tsconfig.json
 
 RUN npx tsc
 
