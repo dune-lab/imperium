@@ -2,25 +2,12 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-COPY enxoval/types/package.json ./enxoval/types/package.json
-COPY enxoval/observability/package.json ./enxoval/observability/package.json
-COPY enxoval/http/package.json ./enxoval/http/package.json
-COPY enxoval/auth/package.json ./enxoval/auth/package.json
-COPY imperium/package.json ./imperium/package.json
+COPY package.json package-lock.json ./
+RUN npm ci
 
-COPY enxoval/types/dist ./enxoval/types/dist
-COPY enxoval/observability/dist ./enxoval/observability/dist
-COPY enxoval/http/dist ./enxoval/http/dist
-COPY enxoval/auth/dist ./enxoval/auth/dist
+COPY src ./src
+COPY tsconfig.json ./
 
-RUN printf '{"name":"app","private":true,"workspaces":["enxoval/types","enxoval/observability","enxoval/http","enxoval/auth","imperium"]}' > package.json
-RUN npm install
-
-WORKDIR /app/imperium
-
-COPY imperium/src ./src
-COPY imperium/tsconfig.json ./
-
-RUN /app/node_modules/.bin/tsc
+RUN npx tsc
 
 CMD ["node", "dist/src/server.js"]
