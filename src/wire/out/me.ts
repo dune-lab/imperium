@@ -1,3 +1,1 @@
-import type { Me } from '../../model/me';
-
-export type MeWireOut = Me;
+export { Me as MeWireOut } from '../../model/me';

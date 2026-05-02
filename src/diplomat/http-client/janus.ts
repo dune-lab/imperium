@@ -1,9 +1,17 @@
-export async function login(email: string, password: string): Promise<{ token: string }> {
+import { asyncFn, createSchema, field } from '@enxoval/types';
+import { AuthToken } from '../../model/auth';
+
+const LoginInput = createSchema({
+  email: field.string(),
+  password: field.string(),
+});
+
+export const login = asyncFn(LoginInput, AuthToken, async (input) => {
   const res = await fetch(`${process.env.JANUS_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email: input.email, password: input.password }),
   });
   if (!res.ok) throw new Error(`janus returned ${res.status}`);
-  return res.json() as Promise<{ token: string }>;
-}
+  return AuthToken.parse(await res.json());
+});

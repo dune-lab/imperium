@@ -1,30 +1,44 @@
-import type { StudentData } from '../../model/me';
+import { asyncFn, nullable, field, createSchema } from '@enxoval/types';
+import { Student } from '../../model/student';
 
-type StudentRow = NonNullable<StudentData>;
+const GetStudentByUserInput = createSchema({
+  userId: field.uuid(),
+  token: field.string(),
+});
 
-export async function getStudentByUser(userId: string, token: string): Promise<StudentData> {
-  const res = await fetch(`${process.env.PERSONA_URL}/students/by-user/${userId}`, {
-    headers: { Authorization: `Bearer ${token}` },
+const CreateStudentInput = createSchema({
+  name: field.string(),
+  email: field.string(),
+  token: field.string(),
+});
+
+const ListStudentsInput = createSchema({
+  token: field.string(),
+});
+
+export const getStudentByUser = asyncFn(GetStudentByUserInput, nullable(Student), async (input) => {
+  const res = await fetch(`${process.env.PERSONA_URL}/students/by-user/${input.userId}`, {
+    headers: { Authorization: `Bearer ${input.token}` },
   });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`persona returned ${res.status}`);
-  return res.json() as Promise<StudentRow>;
-}
+  return Student.parse(await res.json());
+});
 
-export async function createStudent(name: string, email: string, token: string): Promise<StudentRow> {
+export const createStudent = asyncFn(CreateStudentInput, Student, async (input) => {
   const res = await fetch(`${process.env.PERSONA_URL}/students`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-    body: JSON.stringify({ name, email }),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${input.token}` },
+    body: JSON.stringify({ name: input.name, email: input.email }),
   });
   if (!res.ok) throw new Error(`persona returned ${res.status}`);
-  return res.json() as Promise<StudentRow>;
-}
+  return Student.parse(await res.json());
+});
 
-export async function listStudents(token: string): Promise<StudentRow[]> {
+export const listStudents = asyncFn(ListStudentsInput, field.array(Student), async (input) => {
   const res = await fetch(`${process.env.PERSONA_URL}/students`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${input.token}` },
   });
   if (!res.ok) throw new Error(`persona returned ${res.status}`);
-  return res.json() as Promise<StudentRow[]>;
-}
+  return field.array(Student).parse(await res.json());
+});

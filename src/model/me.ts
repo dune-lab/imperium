@@ -1,30 +1,18 @@
-export type UserData = {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified: boolean;
-  role: string;
-  createdAt: string;
-};
+import { createSchema, field } from '@enxoval/types';
+import { Student } from './student';
+import { Journey } from './journey';
 
-export type StudentData = {
-  id: string;
-  name: string;
-  email: string;
-  userId: string;
-  createdAt: string;
-} | null;
+export const UserData = createSchema({
+  id: field.string(),
+  name: field.string(),
+  email: field.string(),
+  emailVerified: field.boolean(),
+  role: field.string(),
+  createdAt: field.string(),
+});
 
-export type JourneyData = {
-  id: string;
-  studentId: string;
-  currentStep: string;
-  status: string;
-  createdAt: string;
-} | null;
-
-export type Me = {
-  user: UserData;
-  student: StudentData;
-  journey: JourneyData;
-};
+export const Me = createSchema({
+  user: field.nested(UserData),
+  student: field.nullable(field.nested(Student)),
+  journey: field.nullable(field.nested(Journey)),
+});

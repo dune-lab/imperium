@@ -1,16 +1,23 @@
-import type { Me } from '../model/me';
+import { asyncFn, UnauthorizedError } from '@enxoval/types';
+import { getCurrentUser } from '@enxoval/auth';
+import { NoInput } from '../wire/in/no-input';
+import { Me } from '../model/me';
 import { getUser } from '../diplomat/http-client/atreides';
 import { getStudentByUser } from '../diplomat/http-client/persona';
 import { getJourneyByStudent } from '../diplomat/http-client/odyssey';
-import { toMe } from '../adapters/me';
 
-export async function getMe(userId: string, token: string): Promise<Me> {
+export const getMe = asyncFn(NoInput, Me, async (_) => {
+  const auth = getCurrentUser();
+  if (!auth) throw new UnauthorizedError('Unauthorized');
+
   const [user, student] = await Promise.all([
-    getUser(userId, token),
-    getStudentByUser(userId, token),
+    getUser({ userId: auth.userId, token: auth.token }),
+    getStudentByUser({ userId: auth.userId, token: auth.token }),
   ]);
 
-  const journey = student ? await getJourneyByStudent(student.id, token) : null;
+  const journey = student
+    ? await getJourneyByStudent({ studentId: student.id, token: auth.token })
+    : null;
 
-  return toMe(user, student, journey);
-}
+  return { user, student, journey };
+});
