@@ -1,4 +1,4 @@
-import { asyncFn, createSchema, field } from '@enxoval/types';
+import { asyncFn, createSchema, field, ConflictError } from '@enxoval/types';
 import { UserData } from '../../model/me';
 
 const GetUserInput = createSchema({
@@ -27,6 +27,7 @@ export const createUser = asyncFn(CreateUserInput, UserData, async (input) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: input.name, email: input.email, password: input.password, role: input.role }),
   });
+  if (res.status === 409) throw new ConflictError('E-mail já está em uso');
   if (!res.ok) throw new Error(`atreides returned ${res.status}`);
   return UserData.parse(await res.json());
 });
