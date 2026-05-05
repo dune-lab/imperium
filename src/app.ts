@@ -6,6 +6,7 @@ import { registerMeRoutes } from './diplomat/http-server/me';
 import { registerStudentRoutes } from './diplomat/http-server/students';
 import { registerJourneyRoutes } from './diplomat/http-server/journeys';
 import { registerJourneyStreamRoute } from './diplomat/http-server/journey-stream';
+import { registerHarkonnenRoutes } from './diplomat/http-server/harkonnen';
 
 export function buildApp(): void {
   get('/health', async () => ({ status: 'ok' }));
@@ -16,4 +17,5 @@ export function buildApp(): void {
   registerStudentRoutes();
   registerJourneyRoutes();
   registerJourneyStreamRoute();
+  registerHarkonnenRoutes();
 }
