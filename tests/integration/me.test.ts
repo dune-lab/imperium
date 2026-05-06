@@ -1,4 +1,4 @@
-import { test, describe, it, expect, beforeAll, beforeEach } from '@enxoval/testing';
+import { test, describe, it, expect, beforeAll, beforeEach, generate } from '@enxoval/testing';
 
 test.mock('../../src/diplomat/http-client/atreides', () => ({
   getUser: test.fn(),
@@ -18,35 +18,14 @@ import { signToken } from '@enxoval/auth';
 import { getUser } from '../../src/diplomat/http-client/atreides';
 import { getStudentByUser } from '../../src/diplomat/http-client/persona';
 import { getJourneyByStudent } from '../../src/diplomat/http-client/odyssey';
+import { UserData } from '../../src/model/me';
+import { Student } from '../../src/model/student';
+import { Journey } from '../../src/model/journey';
 
-const userId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
-const studentId = 'b2c3d4e5-f6a7-8901-bcde-f12345678901';
-
-const user = {
-  id: userId,
-  name: 'Alice',
-  email: 'alice@example.com',
-  emailVerified: true,
-  role: 'student',
-  createdAt: '2025-01-01T00:00:00.000Z',
-};
-
-const student = {
-  id: studentId,
-  name: 'Alice',
-  email: 'alice@example.com',
-  userId,
-  createdAt: '2025-01-01T00:00:00.000Z',
-};
-
-const journey = {
-  id: 'c3d4e5f6-a7b8-9012-cdef-123456789012',
-  studentId,
-  currentStep: 'JOURNEY_INITIATED',
-  status: 'active',
-  createdAt: '2025-01-01T00:00:00.000Z',
-  events: [],
-};
+const userId = crypto.randomUUID();
+const user = generate(UserData, { id: userId });
+const student = generate(Student, { userId });
+const journey = generate(Journey, { studentId: student.id, events: [] });
 
 let token: string;
 
@@ -54,7 +33,7 @@ beforeAll(() => {
   process.env.JWT_SECRET = 'test-secret';
   process.env.JWT_EXPIRES_IN = '1h';
   buildApp();
-  token = signToken(userId, 'student');
+  token = signToken(user.id, user.role);
 });
 
 beforeEach(() => {
