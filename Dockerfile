@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY imperium/package.json ./package.json
 COPY imperium/package-lock.json ./package-lock.json
-RUN npm ci
+RUN npm install
 
 COPY imperium/src ./src
 COPY imperium/tsconfig.json ./tsconfig.json
