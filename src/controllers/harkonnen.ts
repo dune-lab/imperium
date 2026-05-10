@@ -9,7 +9,7 @@ import { getCurrentUser } from '@enxoval/auth';
 import { NoInput } from '../wire/in/no-input';
 import { ReprocessOneWireIn, ReprocessAllByTopicWireIn, DismissWireIn } from '../wire/in/harkonnen';
 import { ReprocessOneWireOut, ReprocessAllWireOut, DismissWireOut } from '../wire/out/harkonnen';
-import { DlqMessage } from '../model/dlq-message';
+import { HarkonnenMessage } from '@enxoval/messaging';
 import {
   listDlq as odysseyList,
   reprocessDlqOne as odysseyReprocessOne,
@@ -20,9 +20,9 @@ import {
 /**
  * Lists all DLQ messages for the authenticated user.
  * Input: NoInput (empty)
- * Output: array of DlqMessage
+ * Output: array of HarkonnenMessage
  */
-export const listDlqMessages = asyncFn(NoInput, field.array(DlqMessage), async (_) => {
+export const listDlqMessages = asyncFn(NoInput, field.array(HarkonnenMessage), async (_) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
   return odysseyList({ token: auth.token });

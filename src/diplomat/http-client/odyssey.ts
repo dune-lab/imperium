@@ -1,7 +1,7 @@
 import { asyncFn, nullable, field, createSchema } from '@enxoval/types';
 import { Journey } from '../../model/journey';
 import { RepublishWireOut } from '../../wire/out/republish';
-import { DlqMessage } from '../../model/dlq-message';
+import { HarkonnenMessage } from '@enxoval/messaging';
 import { ReprocessOneWireOut, ReprocessAllWireOut, DismissWireOut } from '../../wire/out/harkonnen';
 
 const GetJourneyByStudentInput = createSchema({
@@ -75,14 +75,14 @@ const DismissClientInput = createSchema({
 /**
  * Fetches all DLQ messages from the odyssey harkonnen endpoint.
  * Input: token (Bearer auth)
- * Output: array of DlqMessage
+ * Output: array of HarkonnenMessage
  */
-export const listDlq = asyncFn(TokenInput, field.array(DlqMessage), async (input) => {
+export const listDlq = asyncFn(TokenInput, field.array(HarkonnenMessage), async (input) => {
   const res = await fetch(`${process.env.ODYSSEY_URL}/harkonnen`, {
     headers: { Authorization: `Bearer ${input.token}` },
   });
   if (!res.ok) throw new Error(`odyssey returned ${res.status}`);
-  return field.array(DlqMessage).parse(await res.json());
+  return field.array(HarkonnenMessage).parse(await res.json());
 });
 
 /**
