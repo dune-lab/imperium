@@ -4,22 +4,22 @@ import { StartJourneyWireIn } from '../wire/in/start-journey';
 import { NoInput } from '../wire/in/no-input';
 import { Journey } from '../model/journey';
 import { RepublishWireOut } from '../wire/out/republish';
-import { startJourney, listJourneys, republish } from '../diplomat/http-client';
+import * as diplomat from '../diplomat/http-client';
 
 export const startJourney = asyncFn(StartJourneyWireIn, Journey, async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return startJourney({ studentId: input.studentId });
+  return diplomat.startJourney(input);
 });
 
-export const listJourneys = asyncFn(NoInput, field.array(Journey), async (_) => {
+export const listJourneys = asyncFn(NoInput, field.array(Journey), async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return listJourneys();
+  return diplomat.listJourneys(input);
 });
 
-export const republish = asyncFn(NoInput, RepublishWireOut, async (_) => {
+export const republish = asyncFn(NoInput, RepublishWireOut, async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return republish();
+  return diplomat.republish(input);
 });

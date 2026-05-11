@@ -6,7 +6,7 @@
  * function names are visible to callers.
  */
 import { defineHttpAliases } from '@enxoval/http';
-import { nullable, field } from '@enxoval/types';
+import { asyncFn, nullable, field, createSchema } from '@enxoval/types';
 import { HarkonnenMessage } from '@enxoval/messaging';
 import { UserData } from '../../model/me';
 import { AuthToken } from '../../model/auth';
@@ -14,6 +14,12 @@ import { Student } from '../../model/student';
 import { Journey } from '../../model/journey';
 import { RepublishWireOut } from '../../wire/out/republish';
 import { ReprocessOneWireOut, ReprocessAllWireOut, DismissWireOut } from '../../wire/out/harkonnen';
+import { RegisterWireIn } from '../../wire/in/register';
+import { CreateStudentWireIn } from '../../wire/in/create-student';
+import { StartJourneyWireIn } from '../../wire/in/start-journey';
+import { LoginWireIn } from '../../wire/in/login';
+import { NoInput } from '../../wire/in/no-input';
+import { ReprocessOneWireIn, ReprocessAllByTopicWireIn, DismissWireIn } from '../../wire/in/harkonnen';
 
 const { call } = defineHttpAliases({
   getUser:                UserData,
@@ -32,44 +38,48 @@ const { call } = defineHttpAliases({
   login:                  AuthToken,
 });
 
-export const getUser = ({ userId }: { userId: string }) =>
-  call('getUser', { payload: { userId } });
+const GetUserIn = createSchema({ userId: field.uuid() });
+const GetStudentIn = createSchema({ userId: field.uuid() });
+const GetJourneyIn = createSchema({ studentId: field.uuid() });
 
-export const createUser = ({ name, email, password, role }: { name: string; email: string; password: string; role: string }) =>
-  call('createUser', { payload: { name, email, password, role } });
+export const getUser = asyncFn(GetUserIn, UserData, (input) =>
+  call('getUser', { payload: input }));
 
-export const getStudentByUser = ({ userId }: { userId: string }) =>
-  call('getStudentByUser', { payload: { userId } });
+export const createUser = asyncFn(RegisterWireIn, UserData, (input) =>
+  call('createUser', { payload: input }));
 
-export const createStudent = ({ name, email }: { name: string; email: string }) =>
-  call('createStudent', { payload: { name, email } });
+export const getStudentByUser = asyncFn(GetStudentIn, nullable(Student), (input) =>
+  call('getStudentByUser', { payload: input }));
 
-export const listStudents = () =>
-  call('listStudents');
+export const createStudent = asyncFn(CreateStudentWireIn, Student, (input) =>
+  call('createStudent', { payload: input }));
 
-export const getJourneyByStudent = ({ studentId }: { studentId: string }) =>
-  call('getJourneyByStudent', { payload: { studentId } });
+export const listStudents = asyncFn(NoInput, field.array(Student), () =>
+  call('listStudents'));
 
-export const startJourney = ({ studentId }: { studentId: string }) =>
-  call('startJourney', { payload: { studentId } });
+export const getJourneyByStudent = asyncFn(GetJourneyIn, nullable(Journey), (input) =>
+  call('getJourneyByStudent', { payload: input }));
 
-export const listJourneys = () =>
-  call('listJourneys');
+export const startJourney = asyncFn(StartJourneyWireIn, Journey, (input) =>
+  call('startJourney', { payload: input }));
 
-export const republish = () =>
-  call('republish');
+export const listJourneys = asyncFn(NoInput, field.array(Journey), () =>
+  call('listJourneys'));
 
-export const listDlq = () =>
-  call('listDlq');
+export const republish = asyncFn(NoInput, RepublishWireOut, () =>
+  call('republish'));
 
-export const reprocessDlqOne = ({ id, payload }: { id: string; payload: string }) =>
-  call('reprocessDlqOne', { payload: { id, payload } });
+export const listDlq = asyncFn(NoInput, field.array(HarkonnenMessage), () =>
+  call('listDlq'));
 
-export const reprocessDlqAllByTopic = ({ topic }: { topic: string }) =>
-  call('reprocessDlqAllByTopic', { payload: { topic } });
+export const reprocessDlqOne = asyncFn(ReprocessOneWireIn, ReprocessOneWireOut, (input) =>
+  call('reprocessDlqOne', { payload: input }));
 
-export const dismissDlq = ({ id }: { id: string }) =>
-  call('dismissDlq', { payload: { id } });
+export const reprocessDlqAllByTopic = asyncFn(ReprocessAllByTopicWireIn, ReprocessAllWireOut, (input) =>
+  call('reprocessDlqAllByTopic', { payload: input }));
 
-export const login = ({ email, password }: { email: string; password: string }) =>
-  call('login', { payload: { email, password } });
+export const dismissDlq = asyncFn(DismissWireIn, DismissWireOut, (input) =>
+  call('dismissDlq', { payload: input }));
+
+export const login = asyncFn(LoginWireIn, AuthToken, (input) =>
+  call('login', { payload: input }));
