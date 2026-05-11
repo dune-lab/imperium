@@ -1,33 +1,17 @@
-import { asyncFn, createSchema, field, ConflictError } from '@enxoval/types';
-import { UserData } from '../../model/me';
+/**
+ * diplomat/http-client/atreides.ts
+ *
+ * HTTP client for the atreides service (user management).
+ * Uses call() from src/http.ts — URL, token and error handling are automatic.
+ *
+ * Exports:
+ *   getUser({ userId })                              → UserData
+ *   createUser({ name, email, password, role })      → UserData
+ */
+import { call } from '../../http';
 
-const GetUserInput = createSchema({
-  userId: field.string(),
-  token: field.string(),
-});
+export const getUser = ({ userId }: { userId: string }) =>
+  call('getUser', { payload: { userId } });
 
-const CreateUserInput = createSchema({
-  name: field.string(),
-  email: field.string(),
-  password: field.string(),
-  role: field.string(),
-});
-
-export const getUser = asyncFn(GetUserInput, UserData, async (input) => {
-  const res = await fetch(`${process.env.ATREIDES_URL}/users/${input.userId}`, {
-    headers: { Authorization: `Bearer ${input.token}` },
-  });
-  if (!res.ok) throw new Error(`atreides returned ${res.status}`);
-  return UserData.parse(await res.json());
-});
-
-export const createUser = asyncFn(CreateUserInput, UserData, async (input) => {
-  const res = await fetch(`${process.env.ATREIDES_URL}/users`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: input.name, email: input.email, password: input.password, role: input.role }),
-  });
-  if (res.status === 409) throw new ConflictError('E-mail já está em uso');
-  if (!res.ok) throw new Error(`atreides returned ${res.status}`);
-  return UserData.parse(await res.json());
-});
+export const createUser = ({ name, email, password, role }: { name: string; email: string; password: string; role: string }) =>
+  call('createUser', { payload: { name, email, password, role } });

@@ -1,18 +1,13 @@
-import { asyncFn, createSchema, field, UnauthorizedError } from '@enxoval/types';
-import { AuthToken } from '../../model/auth';
+/**
+ * diplomat/http-client/janus.ts
+ *
+ * HTTP client for the janus service (authentication).
+ * Login is a public endpoint (auth: false in imperium.json).
+ *
+ * Exports:
+ *   login({ email, password }) → AuthToken
+ */
+import { call } from '../../http';
 
-const LoginInput = createSchema({
-  email: field.string(),
-  password: field.string(),
-});
-
-export const login = asyncFn(LoginInput, AuthToken, async (input) => {
-  const res = await fetch(`${process.env.JANUS_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: input.email, password: input.password }),
-  });
-  if (res.status === 401) throw new UnauthorizedError('E-mail ou senha inválidos');
-  if (!res.ok) throw new Error(`janus returned ${res.status}`);
-  return AuthToken.parse(await res.json());
-});
+export const login = ({ email, password }: { email: string; password: string }) =>
+  call('login', { payload: { email, password } });
