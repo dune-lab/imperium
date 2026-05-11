@@ -1,23 +1,15 @@
 import { test, describe, it, expect, beforeAll, beforeEach, generate } from '@enxoval/testing';
 
-test.mock('../../src/diplomat/http-client/atreides', () => ({
+test.mock('../../src/diplomat/http-client', () => ({
   getUser: test.fn(),
-}));
-
-test.mock('../../src/diplomat/http-client/persona', () => ({
   getStudentByUser: test.fn(),
-}));
-
-test.mock('../../src/diplomat/http-client/odyssey', () => ({
   getJourneyByStudent: test.fn(),
 }));
 
 import { buildApp } from '../../src/app';
 import { inject } from '@enxoval/http';
 import { signToken } from '@enxoval/auth';
-import { getUser } from '../../src/diplomat/http-client/atreides';
-import { getStudentByUser } from '../../src/diplomat/http-client/persona';
-import { getJourneyByStudent } from '../../src/diplomat/http-client/odyssey';
+import { getUser, getStudentByUser, getJourneyByStudent } from '../../src/diplomat/http-client';
 import { UserData } from '../../src/model/me';
 import { Student } from '../../src/model/student';
 import { Journey } from '../../src/model/journey';

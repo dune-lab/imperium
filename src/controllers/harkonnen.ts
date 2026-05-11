@@ -10,12 +10,7 @@ import { NoInput } from '../wire/in/no-input';
 import { ReprocessOneWireIn, ReprocessAllByTopicWireIn, DismissWireIn } from '../wire/in/harkonnen';
 import { ReprocessOneWireOut, ReprocessAllWireOut, DismissWireOut } from '../wire/out/harkonnen';
 import { HarkonnenMessage } from '@enxoval/messaging';
-import {
-  listDlq as odysseyList,
-  reprocessDlqOne as odysseyReprocessOne,
-  reprocessDlqAllByTopic as odysseyReprocessAll,
-  dismissDlq as odysseyDismiss,
-} from '../diplomat/http-client/odyssey';
+import { listDlq, reprocessDlqOne, reprocessDlqAllByTopic, dismissDlq } from '../diplomat/http-client';
 
 /**
  * Lists all DLQ messages for the authenticated user.
@@ -25,7 +20,7 @@ import {
 export const listDlqMessages = asyncFn(NoInput, field.array(HarkonnenMessage), async (_) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return odysseyList({ token: auth.token });
+  return listDlq();
 });
 
 /**
@@ -36,7 +31,7 @@ export const listDlqMessages = asyncFn(NoInput, field.array(HarkonnenMessage), a
 export const reprocessDlqOne = asyncFn(ReprocessOneWireIn, ReprocessOneWireOut, async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return odysseyReprocessOne({ token: auth.token, id: input.id, payload: input.payload });
+  return reprocessDlqOne({ id: input.id, payload: input.payload });
 });
 
 /**
@@ -47,7 +42,7 @@ export const reprocessDlqOne = asyncFn(ReprocessOneWireIn, ReprocessOneWireOut, 
 export const reprocessDlqAllByTopic = asyncFn(ReprocessAllByTopicWireIn, ReprocessAllWireOut, async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return odysseyReprocessAll({ token: auth.token, topic: input.topic });
+  return reprocessDlqAllByTopic({ topic: input.topic });
 });
 
 /**
@@ -58,5 +53,5 @@ export const reprocessDlqAllByTopic = asyncFn(ReprocessAllByTopicWireIn, Reproce
 export const dismissDlqMessage = asyncFn(DismissWireIn, DismissWireOut, async (input) => {
   const auth = getCurrentUser();
   if (!auth) throw new UnauthorizedError('Unauthorized');
-  return odysseyDismiss({ token: auth.token, id: input.id });
+  return dismissDlq({ id: input.id });
 });
