@@ -10,7 +10,7 @@ import { registerHarkonnenRoutes } from './diplomat/http-server/harkonnen';
 
 export function buildApp(): void {
   get('/health', async () => ({ status: 'ok' }));
-  setupAuth({ exclude: ['/health', '/auth/login', '/users/register', '/journeys/:journeyId/stream'] });
+  setupAuth({ exclude: ['/health', '/auth/login', '/users/register', '/routes', '/contracts', '/journeys/:journeyId/stream'] });
   registerAuthRoutes();
   registerRegisterRoutes();
   registerMeRoutes();
