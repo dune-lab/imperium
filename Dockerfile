@@ -8,6 +8,7 @@ RUN npm install
 
 COPY imperium/src ./src
 COPY imperium/tsconfig.json ./tsconfig.json
+COPY imperium/imperium.json ./imperium.json
 
 RUN npx tsc
 
