@@ -1,19 +1,15 @@
 {
   "http": {
-    "getUser":                { "service": "atreides", "method": "GET",  "path": "/users/:userId" },
-    "createUser":             { "service": "atreides", "method": "POST", "path": "/users" },
-    "getStudentByUser":       { "service": "persona",  "method": "GET",  "path": "/students/by-user/:userId", "nullable": true },
-    "createStudent":          { "service": "persona",  "method": "POST", "path": "/students" },
-    "listStudents":           { "service": "persona",  "method": "GET",  "path": "/students" },
-    "getJourneyByStudent":    { "service": "odyssey",  "method": "GET",  "path": "/journeys/by-student/:studentId", "nullable": true },
-    "startJourney":           { "service": "odyssey",  "method": "POST", "path": "/journeys" },
-    "listJourneys":           { "service": "odyssey",  "method": "GET",  "path": "/journeys" },
-    "republish":              { "service": "odyssey",  "method": "POST", "path": "/journeys/republish" },
-    "listDlq":                { "service": "odyssey",  "method": "GET",  "path": "/harkonnen" },
-    "reprocessDlqOne":        { "service": "odyssey",  "method": "POST", "path": "/harkonnen/reprocess" },
-    "reprocessDlqAllByTopic": { "service": "odyssey",  "method": "POST", "path": "/harkonnen/reprocess-all" },
-    "dismissDlq":             { "service": "odyssey",  "method": "POST", "path": "/harkonnen/dismiss" },
-    "login":                  { "service": "janus",    "method": "POST", "path": "/auth/login", "auth": false }
+    "getUser":             { "service": "atreides", "method": "GET",  "path": "/users/:userId" },
+    "createUser":          { "service": "atreides", "method": "POST", "path": "/users" },
+    "getStudentByUser":    { "service": "persona",  "method": "GET",  "path": "/students/by-user/:userId", "nullable": true },
+    "createStudent":       { "service": "persona",  "method": "POST", "path": "/students" },
+    "listStudents":        { "service": "persona",  "method": "GET",  "path": "/students" },
+    "getJourneyByStudent": { "service": "odyssey",  "method": "GET",  "path": "/journeys/by-student/:studentId", "nullable": true },
+    "startJourney":        { "service": "odyssey",  "method": "POST", "path": "/journeys" },
+    "listJourneys":        { "service": "odyssey",  "method": "GET",  "path": "/journeys" },
+    "republish":           { "service": "odyssey",  "method": "POST", "path": "/journeys/republish" },
+    "login":               { "service": "janus",    "method": "POST", "path": "/auth/login", "auth": false }
   },
   "kafka_topics": {}
 }

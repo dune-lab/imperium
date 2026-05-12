@@ -7,19 +7,16 @@
  */
 import { defineHttpAliases } from '@enxoval/http';
 import { asyncFn, nullable, field, createSchema } from '@enxoval/types';
-import { HarkonnenMessage } from '@enxoval/messaging';
 import { UserData } from '../../model/me';
 import { AuthToken } from '../../model/auth';
 import { Student } from '../../model/student';
 import { Journey } from '../../model/journey';
 import { RepublishWireOut } from '../../wire/out/republish';
-import { ReprocessOneWireOut, ReprocessAllWireOut, DismissWireOut } from '../../wire/out/harkonnen';
 import { RegisterWireIn } from '../../wire/in/register';
 import { CreateStudentWireIn } from '../../wire/in/create-student';
 import { StartJourneyWireIn } from '../../wire/in/start-journey';
 import { LoginWireIn } from '../../wire/in/login';
 import { NoInput } from '../../wire/in/no-input';
-import { ReprocessOneWireIn, ReprocessAllByTopicWireIn, DismissWireIn } from '../../wire/in/harkonnen';
 
 const { call } = defineHttpAliases({
   getUser:                UserData,
@@ -31,10 +28,6 @@ const { call } = defineHttpAliases({
   startJourney:           Journey,
   listJourneys:           field.array(Journey),
   republish:              RepublishWireOut,
-  listDlq:                field.array(HarkonnenMessage),
-  reprocessDlqOne:        ReprocessOneWireOut,
-  reprocessDlqAllByTopic: ReprocessAllWireOut,
-  dismissDlq:             DismissWireOut,
   login:                  AuthToken,
 });
 
@@ -68,18 +61,6 @@ export const listJourneys = asyncFn(NoInput, field.array(Journey), () =>
 
 export const republish = asyncFn(NoInput, RepublishWireOut, () =>
   call('republish'));
-
-export const listDlq = asyncFn(NoInput, field.array(HarkonnenMessage), () =>
-  call('listDlq'));
-
-export const reprocessDlqOne = asyncFn(ReprocessOneWireIn, ReprocessOneWireOut, (input) =>
-  call('reprocessDlqOne', { payload: input }));
-
-export const reprocessDlqAllByTopic = asyncFn(ReprocessAllByTopicWireIn, ReprocessAllWireOut, (input) =>
-  call('reprocessDlqAllByTopic', { payload: input }));
-
-export const dismissDlq = asyncFn(DismissWireIn, DismissWireOut, (input) =>
-  call('dismissDlq', { payload: input }));
 
 export const login = asyncFn(LoginWireIn, AuthToken, (input) =>
   call('login', { payload: input }));
