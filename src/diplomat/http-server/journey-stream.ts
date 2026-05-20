@@ -47,5 +47,6 @@ export function registerJourneyStreamRoute(): void {
         reader.cancel();
       }
     },
+    { in: null, out: null },
   );
 }

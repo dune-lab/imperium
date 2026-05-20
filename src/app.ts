@@ -8,9 +8,9 @@ import { registerJourneyRoutes } from './diplomat/http-server/journeys';
 import { registerJourneyStreamRoute } from './diplomat/http-server/journey-stream';
 
 export function buildApp(): void {
-  get('/health', async () => ({ status: 'ok' }));
+  get('/health', async () => ({ status: 'ok' }), { in: null, out: null });
   setupAuth({
-    exclude: ['/health', '/auth/login', '/users/register', '/routes', '/contracts', '/journeys/:journeyId/stream'],
+    exclude: ['/health', '/auth/login', '/users/register', '/routes', '/journeys/:journeyId/stream'],
   });
   registerAuthRoutes();
   registerRegisterRoutes();
